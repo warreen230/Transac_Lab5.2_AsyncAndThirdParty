@@ -16,30 +16,30 @@ namespace ZombieParty.Controllers
             _baseDonnees = baseDonnees;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            List<Zombie> zombiesList = _baseDonnees.Zombies.OrderBy(z => z.Name).Include(z => z.ZombieType).ToList();
+            List<Zombie> zombiesList = await _baseDonnees.Zombies.OrderBy(z => z.Name).Include(z => z.ZombieType).ToListAsync();
 
             return View(zombiesList);
         }
 
-        public IActionResult StrongestZombies()
+        public async Task<IActionResult> StrongestZombies()
         {
-            List<Zombie> zombiesList = _baseDonnees.Zombies.Where(z => z.Point >= 8).OrderBy(z => z.Name).Include(z => z.ZombieType).ToList();
+            List<Zombie> zombiesList = await _baseDonnees.Zombies.Where(z => z.Point >= 8).OrderBy(z => z.Name).Include(z => z.ZombieType).ToListAsync();
 
             return View(zombiesList);
         }
 
-        public IActionResult ZombiesByType()
+        public async Task<IActionResult> ZombiesByType()
         {
-            List<ZombieType> zombieTypes = _baseDonnees.ZombieTypes.OrderBy(z => z.TypeName).Include(z => z.Zombies).ToList();
+            List<ZombieType> zombieTypes = await _baseDonnees.ZombieTypes.OrderBy(z => z.TypeName).Include(z => z.Zombies).ToListAsync();
 
             return View(zombieTypes);
         }
 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            Zombie? zombie = _baseDonnees.Zombies.Include(z => z.ZombieType).FirstOrDefault(z => z.Id == id);
+            Zombie? zombie = await _baseDonnees.Zombies.Include(z => z.ZombieType).FirstOrDefaultAsync(z => z.Id == id);
             if (zombie == null)
             {
                 return NotFound();
@@ -50,24 +50,24 @@ namespace ZombieParty.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult DeletePost(int id)
+        public async Task<IActionResult> DeletePost(int id)
         {
-            Zombie? zombie = _baseDonnees.Zombies.Find(id);
+            Zombie? zombie = await _baseDonnees.Zombies.FindAsync(id);
             if (zombie == null)
             {
                 return NotFound();
             }
 
             _baseDonnees.Zombies.Remove(zombie);
-            _baseDonnees.SaveChanges();
+            await _baseDonnees.SaveChangesAsync();
             TempData["Success"] = $"Zombie {zombie.Name} terminated";
             return RedirectToAction("Index");
         }
 
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
             ZombieVM zombieVM = new ZombieVM();
-            zombieVM.Zombie = _baseDonnees.Zombies.Find(id);
+            zombieVM.Zombie = await _baseDonnees.Zombies.FindAsync(id);
             zombieVM.ZombieTypeSelectList = _baseDonnees.ZombieTypes.Select(t => new SelectListItem
             {
                 Text = t.TypeName,
@@ -79,13 +79,13 @@ namespace ZombieParty.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(ZombieVM zombieVM)
+        public async Task<IActionResult> Edit(ZombieVM zombieVM)
         {
             //Si le modèle est valide le zombie est modifié et nous sommes redirigé vers index.
             if (ModelState.IsValid)
             {
                 _baseDonnees.Zombies.Update(zombieVM.Zombie);
-                _baseDonnees.SaveChanges();
+                await _baseDonnees.SaveChangesAsync();
                 TempData["Success"] = $"Zombie {zombieVM.Zombie.Name} has been modified";
                 return this.RedirectToAction("Index");
             }
@@ -98,7 +98,7 @@ namespace ZombieParty.Controllers
             return View(zombieVM);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             ZombieVM zombieVM = new ZombieVM();
             zombieVM.ZombieTypeSelectList = _baseDonnees.ZombieTypes.Select(t => new SelectListItem
@@ -112,13 +112,13 @@ namespace ZombieParty.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(ZombieVM zombieVM)
+        public async Task<IActionResult> Create(ZombieVM zombieVM)
         {
             //Si le modèle est valide le zombie est ajouté et nous sommes redirigé vers index.
             if (ModelState.IsValid)
             {
-                _baseDonnees.Zombies.Add(zombieVM.Zombie);
-                _baseDonnees.SaveChanges();
+                await _baseDonnees.Zombies.AddAsync(zombieVM.Zombie);
+                await _baseDonnees.SaveChangesAsync();
                 TempData["Success"] = $"Zombie {zombieVM.Zombie.Name} added";
                 return this.RedirectToAction("Index");
             }

@@ -1,48 +1,41 @@
 ﻿@model IEnumerable<ZombieType>
 
-﻿<div class="container p-3">
+<div class="container p-3">
     <div class="row pt-4">
         <div class="col-10">
-            <h2 class="text-primary">Zombie Type</h2>
-        </div>
-        <div class="col-2 text-right">
-            <a class="btn btn-success" asp-controller="ZombieType" asp-action="Create">
-                Create New Type
-            </a>
+            <h2 class="text-primary">Zombies by type</h2>
         </div>
     </div>
 
-    <br /><br />
-    <table class="table table-bordered table-striped" style="width:100%">
-        <thead class="bg-dark text-white">
-            <tr>
-                <th>
-                    Type Name
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td width="80%">
-                        <a class="btn btn-info" asp-controller="" asp-action="Details" asp-route-id="@item.Id" >
-                            @item.TypeName
-                        </a>
-                    </td>
-                    <td class="text-center">
-                        <div class="w-75 btn-group" role="group">
-                            <a class="btn btn-info mx-2" asp-controller="Zombie" asp-action="Edit">
-                                Edit
-                            </a>
-                            <a class="btn btn-danger mx-2" asp-action="Delete" asp-route-Id="@item.Id">
-                                Delete
-                            </a>
+    <div class="accordion" id="zombieAccordion">
+        @foreach (var zombieType in Model)
+        {
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="@("#Id" + zombieType.Id)" aria-expanded="false" aria-controls="@zombieType.TypeName">
+                        @zombieType.TypeName
+                    </button>
+                </h2>
+                <div id="@("Id" + zombieType.Id)" class="accordion-collapse collapse" data-bs-parent="#zombieAccordion">
+                    <div class="accordion-body">
+                        <div class="row">
+                            @foreach (var zombie in zombieType.Zombies)
+                            {
+                                <div href="#" class="card  border m-3 text-center bg-warning" style="width: 20rem; background-image: url('/images/imagesLayout/Fond.png'); ">
+                                    <div class="card-body  text-warning">
+                                        <h3 class="card-title"> @zombie.Name </h3>
+                                        <h5> Points: @zombie.Point </h5>
+                                    </div>
+                                </div>
+                            }
+                            @if (zombieType.Zombies.Count == 0)
+                            {
+                                <span class="text-danger">Aucun Zombie pour ce type</span>
+                            }
                         </div>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 </div>
