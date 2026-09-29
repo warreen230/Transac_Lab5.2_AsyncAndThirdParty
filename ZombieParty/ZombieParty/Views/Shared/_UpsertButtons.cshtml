@@ -2,13 +2,13 @@
 <div class="col">
     @if (Model == 0)
     {
-            <input type="submit" class="btn btn-success w-100" value="Create" />
+        <button type="submit" class="btn btn-success w-100"><i class="fas fa-plus-square"></i>&nbsp;Create</button>
     }
     else
     {
-            <input type="submit" class="btn btn-info w-100" value="Edit" />
+        <button type="submit" class="btn btn-info w-100" value="Edit"><i class="fa-solid fa-pen-to-square"></i>Edit </button>
     }
 </div>
 <div class="col">
-    <a asp-action="Index" class="btn btn-secondary w-100">Back to list</a>
+    <a class="btn btn-success" asp-action="Upsert"><i class="fas fa-plus-square"></i>&nbsp;Create New</a>
 </div>

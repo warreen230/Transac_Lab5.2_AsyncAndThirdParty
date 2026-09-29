@@ -68,7 +68,7 @@
                     @Html.DisplayFor(modelItem => item.QtyBought)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Upsert", new { id=item.WeaponId }) |
+                    <a asp-action="Upsert" asp-route-Id="@item.WeaponId"><i class="fa-solid fa-pen-to-square"></i> &nbsp;Edit</a>
                     @Html.ActionLink("Details", "Details", new { id=item.WeaponId }) |
                     @Html.ActionLink("Delete", "Delete", new { id=item.WeaponId })
                 </td>
